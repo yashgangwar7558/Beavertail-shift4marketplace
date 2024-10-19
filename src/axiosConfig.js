@@ -1,5 +1,19 @@
 const axios = require('axios');
 
+function generateSignature(clientId, clientSecret, method, path, body, timestamp) {
+    const requestMethod = method.toUpperCase();
+    const requestPath = path.toLowerCase();
+    const requestData = body ? JSON.stringify(body) : '';
+    const stringToSign = `${clientId}${requestMethod}${requestPath}${requestData}${timestamp}`;
+
+    // Generate HMAC-SHA256 signature
+    const hmac = CryptoJS.HmacSHA256(stringToSign, clientSecret);
+    //const signature = hmac.toString(CryptoJS.enc.Hex);
+    const signature = CryptoJS.enc.Hex.stringify(hmac);
+
+    return signature;
+}
+
 // Create Axios instance with interceptors
 const axiosInstance = axios.create();
 
