@@ -1,4 +1,5 @@
 const axios = require('axios');
+const CryptoJS = require('crypto-js');
 
 function generateSignature(clientId, clientSecret, method, path, body, timestamp) {
     const requestMethod = method.toUpperCase();

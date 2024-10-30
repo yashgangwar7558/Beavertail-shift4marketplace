@@ -42,7 +42,7 @@ exports.receivedInstallationRequest = async (req, res) => {
 
         // Fetching customer data for that request
         const apiUrl = `${process.env.SHIFT_HOST}/marketplace/v2/locations/${locationId}/requests/installations/${guid}`;
-        const apiResponse = await axiosInstance.get(apiUrl);
+        const apiResponse = await axiosInstance.get(apiUrl)
 
         // const apiUrl = `http://localhost:8086/marketplace/v2/locations/${locationId}/requests/installations/${guid}`;
         // const apiResponse = await await axios.get(apiUrl)
@@ -54,7 +54,7 @@ exports.receivedInstallationRequest = async (req, res) => {
         await newCustomerData.save();
 
         // Updating subscription status to InProgress
-        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Install - InProgress' });
+        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Install - InProgress', updatedAt: new Date()});
 
         res.status(200).json({ success: true, message: "Installation Request & Customer data received." })
     } catch (err) {
@@ -77,7 +77,7 @@ exports.confirmInstallation = async (req, res) => {
         //     state: 'FULFILLED',
         // })
 
-        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Install - Confirmed' });
+        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Install - Confirmed', updatedAt: new Date() });
 
         res.status(200).json({ success: true, message: "Confirmed - tenant is onboarded!" })
     } catch (err) {
@@ -98,7 +98,7 @@ exports.receivedCancelRequest = async (req, res) => {
         await CustomerData.deleteOne({ guid })
 
         // Updating subscription status to Cancelled
-        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Cancelled' });
+        await SubscriptionStatus.updateOne({ guid, locationId }, { status: 'Cancelled', updatedAt: new Date() });
 
         res.status(200).json({ success: true, message: "Cancel Request accepted & Customer data deleted." })
     } catch (err) {
@@ -124,12 +124,15 @@ exports.deleteSubscriptonStatus = async (req, res) => {
 
 exports.receivedUninstallRequest = async (req, res) => {
     try {
+        console.log("Uninstall endpoint hitted successfully.");
+        
         const { locationId } = req.body.payload;
         const { subscriptionId } = req.body.event;
 
         // Updating subscription status to Uninstall
-        await SubscriptionStatus.updateOne({ subscriptionId, locationId }, { status: 'Uninstall' });
-
+        await SubscriptionStatus.updateOne({ subscriptionId, locationId }, { status: 'Uninstall', updatedAt: new Date() });
+        console.log("Update subscription status to Uninstall");
+        
         res.status(200).json({ success: true, message: "Uninstall request received." })
     } catch (err) {
         console.error('Error receiving uninstallation request:', err.message);
@@ -141,7 +144,7 @@ exports.confirmUninstallation = async (req, res) => {
     try {
         const { locationId } = req.body;
 
-        await SubscriptionStatus.updateOne({ locationId }, { status: 'Uninstall - Confirmed' });
+        await SubscriptionStatus.updateOne({ locationId }, { status: 'Uninstall - Confirmed', updatedAt: new Date() })
 
         res.status(200).json({success: true, message: 'Confirmed - tenant is deboarded!'})
     } catch (err) {

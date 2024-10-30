@@ -21,7 +21,7 @@ router.post('/app/s4/uninstall', authenticateIncomingRequest, receivedUninstallR
 
 router.post('/app/s4/getAllStatus', getAllStatus)
 router.post('/app/s4/deleteSubscriptionStatus', deleteSubscriptonStatus)
-
+    
 // router.post('/app/s4/install', receivedInstallationRequest)
 // router.post('/app/s4/cancel', receivedCancelRequest)
 // router.post('/app/s4/uninstall', receivedUninstallRequest)
